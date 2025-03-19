@@ -1,0 +1,78 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Health Goal Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            margin: 20px 0;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%; /* Full width of the page */
+            height: 300px; /* Adjust height as needed */
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            width: calc(300%); /* Matches the number of images * 100% */
+            animation: slide 12s infinite; /* Infinite animation with pause */
+            gap: 10px; /* Adds gap between images */
+        }
+
+        .slider img {
+            flex: 0 0 calc(100% - 10px); /* Adjust width to account for gap */
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px; /* Curved edges */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: transform 0.3s; /* Smooth hover effect */
+        }
+
+        .slider img:hover {
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        @keyframes slide {
+            0%, 16.67% { transform: translateX(0); } /* Show first image */
+            33.33%, 50% { transform: translateX(-100%); } /* Show second image */
+            66.67%, 83.33% { transform: translateX(-200%); } /* Show third image */
+            100% { transform: translateX(0); } /* Loop back to first image */
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, ${loginuser.fullname}</h1>
+    <div class="slider-container">
+        <div class="slider">
+            <a href="page1.jsp">
+                <img src="${pageContext.request.contextPath}/resources/images/abc3.jpg" alt="Image 1" />
+            </a>
+            <a href="page2.jsp">
+                <img src="${pageContext.request.contextPath}/resources/images/abc1.jpg" alt="Image 2" />
+            </a>
+            <a href="page3.jsp">
+                <img src="${pageContext.request.contextPath}/resources/images/abc2.jpg" alt="Image 3" />
+            </a>
+        </div>
+    </div>
+    <a href="logout">Logout</a>
+</body>
+</html>

@@ -1,0 +1,107 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Background Image Slider</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            width: 300%; /* Total width = number of images * 100% */
+            height: 100%;
+            animation: slide 18s infinite; /* 6s per image (2s pause + 4s slide) */
+        }
+
+        .slider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0%, 11.11% { transform: translateX(0); } /* First image */
+            16.67%, 27.78% { transform: translateX(-100%); } /* Second image */
+            33.33%, 44.44% { transform: translateX(-100%); } /* Second image pause */
+            50%, 61.11% { transform: translateX(-200%); } /* Third image */
+            66.67%, 77.78% { transform: translateX(-200%); } /* Third image pause */
+            83.33%, 100% { transform: translateX(0); } /* Loop back to first */
+        }
+
+        .dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .dots a {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background-color: #fff;
+            opacity: 0.7;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .dots a:hover {
+            opacity: 1;
+        }
+
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            background-color: #ff1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container">
+        <div class="slider">
+            <img src="${pageContext.request.contextPath}/resources/images/abc3.jpg" alt="Image 1">
+            <img src="${pageContext.request.contextPath}/resources/images/abc1.jpg" alt="Image 2">
+            <img src="${pageContext.request.contextPath}/resources/images/abc2.jpg" alt="Image 3">
+        </div>
+        <div class="dots">
+            <a href="page1.jsp"></a>
+            <a href="page2.jsp"></a>
+            <a href="page3.jsp"></a>
+        </div>
+        <a href="logout" class="logout-button">Logout</a>
+    </div>
+</body>
+</html>

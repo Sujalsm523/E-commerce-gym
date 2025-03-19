@@ -1,0 +1,60 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page isELIgnored="false" %>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Health Goal Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        h1 {
+            margin: 20px 0;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%; /* Full width of the page */
+            height: 300px; /* Adjust height as needed */
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            width: calc(300%); /* Matches the number of images * 100% */
+            animation: slide 12s infinite; /* Infinite animation with pause */
+        }
+
+        .slider img {
+            flex: 0 0 100%; /* Each image takes up the full width */
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0%, 16.67% { transform: translateX(0); } /* Show first image */
+            33.33%, 50% { transform: translateX(-100%); } /* Show second image */
+            66.67%, 83.33% { transform: translateX(-200%); } /* Show third image */
+            100% { transform: translateX(0); } /* Loop back to first image */
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, ${loginuser.fullname}</h1>
+    <div class="slider-container">
+        <div class="slider">
+            <img src="${pageContext.request.contextPath}/resources/images/abc3.jpg" alt="Image 1" />
+            <img src="${pageContext.request.contextPath}/resources/images/abc1.jpg" alt="Image 2" />
+            <img src="${pageContext.request.contextPath}/resources/images/abc2.jpg" alt="Image 3" />
+        </div>
+    </div>
+    <a href="logout">Logout</a>
+</body>
+</html>

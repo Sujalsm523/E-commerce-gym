@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smooth Image Slider</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .username {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            text-decoration: none;
+            background-color: #ff6b6b;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #ff4757;
+        }
+
+        .slider-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+        }
+
+        .slide {
+            min-width: 100%;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.5s ease;
+        }
+
+        .slide img:hover {
+            transform: scale(1.05);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .dot {
+            height: 10px;
+            width: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: #717171;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Username and Logout -->
+    <div class="header">
+        <div class="username">
+            Welcome, ${loginuser.fullname}
+        </div>
+        <a href="logout" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="slider-container">
+        <div class="slider" id="slider">
+            <div class="slide">
+                <a href="page1">
+                   <img src="<%= request.getContextPath() %>/resources/images/abc1.jpg" 
+     alt="Image"/>
+                   
+                </a>
+            </div>
+            <div class="slide">
+                <a href="page2">
+                    <img src="<%= request.getContextPath() %>/resources/images/abc2.jpg" 
+     alt="Image"/>
+                    
+                </a>
+            </div>
+            <div class="slide">
+                <a href="page3">
+                    <img src="${pageContext.request.contextPath}/resources/images/abc2.jpg" alt="Slide 3">
+                </a>
+            </div>
+        </div>
+        <div class="navigation" id="navigation">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+        </div>
+    </div>
+
+    <script>
+        class ImageSlider {
+            constructor(sliderElement, navigationElement) {
+                this.slider = sliderElement;
+                this.navigation = navigationElement;
+                this.slides = this.slider.querySelectorAll('.slide');
+                this.dots = this.navigation.querySelectorAll('.dot');
+                this.currentSlide = 0;
+                
+                this.initEventListeners();
+                this.startAutoSlide();
+            }
+
+            initEventListeners() {
+                this.dots.forEach((dot, index) => {
+                    dot.addEventListener('click', () => this.goToSlide(index));
+                });
+            }
+
+            goToSlide(slideIndex) {
+                this.currentSlide = slideIndex;
+                
+                // Update slider position
+                this.slider.style.transform = `translateX(-${slideIndex * 100}%)`;
+                
+                // Update active dot
+                this.dots.forEach(dot => dot.classList.remove('active'));
+                this.dots[slideIndex].classList.add('active');
+            }
+
+            startAutoSlide() {
+                this.autoSlideInterval = setInterval(() => {
+                    this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+                    this.goToSlide(this.currentSlide);
+                }, 5000);
+
+                // Pause on hover
+                this.slider.addEventListener('mouseenter', () => {
+                    clearInterval(this.autoSlideInterval);
+                });
+
+                this.slider.addEventListener('mouseleave', () => {
+                    this.startAutoSlide();
+                });
+            }
+        }
+
+        // Initialize slider
+        document.addEventListener('DOMContentLoaded', () => {
+            const slider = document.getElementById('slider');
+            const navigation = document.getElementById('navigation');
+            new ImageSlider(slider, navigation);
+        });
+    </script>
+</body>
+</html>

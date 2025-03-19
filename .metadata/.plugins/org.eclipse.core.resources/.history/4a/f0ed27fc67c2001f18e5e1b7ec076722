@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Image Slider</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .slider-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 50px auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+        }
+
+        .slide {
+            min-width: 100%;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .slide img:hover {
+            transform: scale(1.05);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .dot {
+            height: 15px;
+            width: 15px;
+            background-color: #bbb;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .dot.active {
+            background-color: #717171;
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container">
+        <div class="slider" id="slider">
+            <div class="slide">
+                <img src="${pageContext.request.contextPath}/resources/images/abc3.jpg" 
+                     data-link="page1" alt="Slide 1">
+            </div>
+            <div class="slide">
+                <img src="${pageContext.request.contextPath}/resources/images/abc1.jpg" 
+                     data-link="page2" alt="Slide 2">
+            </div>
+            <div class="slide">
+                <img src="${pageContext.request.contextPath}/resources/images/abc2.jpg" 
+                     data-link="page3" alt="Slide 3">
+            </div>
+        </div>
+        <div class="navigation" id="navigation">
+            <span class="dot active" data-slide="0"></span>
+            <span class="dot" data-slide="1"></span>
+            <span class="dot" data-slide="2"></span>
+        </div>
+    </div>
+
+    <script>
+    class ImageSlider {
+        constructor(sliderElement, navigationElement) {
+            this.slider = sliderElement;
+            this.navigation = navigationElement;
+            this.slides = this.slider.querySelectorAll('.slide');
+            this.dots = this.navigation.querySelectorAll('.dot');
+            this.currentSlide = 0;
+            
+            // Touch and drag variables
+            this.touchStartX = 0;
+            this.touchEndX = 0;
+            
+            this.initEventListeners();
+            this.startAutoSlide();
+        }
+
+        initEventListeners() {
+            // Dot navigation
+            this.dots.forEach((dot, index) => {
+                dot.addEventListener('click', () => this.goToSlide(index));
+            });
+
+            // Image click navigation
+            this.slides.forEach(slide => {
+                const img = slide.querySelector('img');
+                img.addEventListener('click', () => this.navigateToPage(img));
+            });
+
+            // Touch and drag events
+            this.slider.addEventListener('touchstart', this.handleTouchStart.bind(this));
+            this.slider.addEventListener('touchmove', this.handleTouchMove.bind(this));
+            this.slider.addEventListener('touchend', this.handleTouchEnd.bind(this));
+
+            // Mouse drag events
+            this.slider.addEventListener('mousedown', this.handleTouchStart.bind(this));
+            this.slider.addEventListener('mousemove', this.handleTouchMove.bind(this));
+            this.slider.addEventListener('mouseup', this.handleTouchEnd.bind(this));
+        }
+
+        navigateToPage(img) {
+            const link = img.getAttribute('data-link');
+            if (link) {
+                window.location.href = link;
+            }
+        }
+
+        handleTouchStart(event) {
+            this.touchStartX = event.type.includes('mouse') 
+                ? event.clientX 
+                : event.touches[0].clientX;
+        }
+
+        handleTouchMove(event) {
+            if (!this.touchStartX) return;
+            
+            this.touchEndX = event.type.includes('mouse') 
+                ? event.clientX 
+                : event.touches[0].clientX;
+        }
+
+        handleTouchEnd() {
+            if (!this.touchStartX || !this.touchEndX) return;
+
+            const diffX = this.touchStartX - this.touchEndX;
+            const threshold = 50; // Minimum swipe distance
+
+            if (Math.abs(diffX) > threshold) {
+                // Swipe left
+                if (diffX > 0) {
+                    this.nextSlide();
+                } 
+                // Swipe right
+                else {
+                    this.prevSlide();
+                }
+            }
+
+            // Reset touch variables
+            this.touchStartX = 0;
+            this.touchEndX = 0;
+        }
+
+        nextSlide() {
+            this.currentSlide = (this.currentSlide + 1) % this.slides.length;
+            this.goToSlide(this.currentSlide);
+        }
+
+        prevSlide() {
+            this.currentSlide = (this.currentSlide - 1 + this.slides.length) % this.slides.length;
+            this.goToSlide(this.currentSlide);
+        }
+
+        goToSlide(slideIndex) {
+            this.currentSlide = slideIndex;
+            
+            // Update slider position
+            this.slider.style.transform = `translateX(-${slideIndex * 100}%)`;
+            
+            // Update active dot
+            this.dots.forEach(dot => dot.classList.remove('active'));
+            this.dots[slideIndex].classList.add('active');
+        }
+
+        startAutoSlide() {
+            this.autoSlideInterval = setInterval(() => {
+                this.nextSlide();
+            }, 5000);
+
+            // Pause on hover
+            this.slider.addEventListener('mouseenter', () => {
+                clearInterval(this.autoSlideInterval);
+            });
+
+            this.slider.addEventListener('mouseleave', () => {
+                this.startAutoSlide();
+            });
+        }
+    }
+
+    // Initialize slider
+    document.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('slider');
+        const navigation = document.getElementById('navigation');
+        new ImageSlider(slider, navigation);
+    });
+    </script>
+</body>
+</html>
